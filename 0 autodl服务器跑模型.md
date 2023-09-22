@@ -1,0 +1,42 @@
+# 0 autodl服务器跑模型
+- 0租用服务器
+    - 本地改模型
+    - 服务器
+        - 将改进好的、数据集处理好的模型压缩为zip文件
+        - 上传到阿里云盘
+        - 打开服务器AUTODL服务器，在主页中选择容器实例 ![图片](./0 autodl服务器跑模型-幕布图片-859186-353462.jpg)
+    - 在此位置进行开关机操作，若停止服务器，必须关机，不然会一直扣钱 ![图片](./0 autodl服务器跑模型-幕布图片-966787-447404.jpg)
+- 1运行模型
+    - 选择AutoPanel ![图片](./0 autodl服务器跑模型-幕布图片-309926-29033.jpg)
+    - 然后选择公共网盘，之后选择授权阿里云盘 ![图片](./0 autodl服务器跑模型-幕布图片-575369-821438.jpg)
+    - 选择上传好的文件，点击下载 ![图片](./0 autodl服务器跑模型-幕布图片-415770-63469.jpg)
+    - 然后选择进入JupyterLab ![图片](./0 autodl服务器跑模型-幕布图片-680636-124741.jpg)
+    - 选择终端 ![图片](./0 autodl服务器跑模型-幕布图片-281193-219818.jpg)
+    - 在命令行中使用unzip指令对下载好的压缩文件进行解压（unzip yolov5） ![图片](./0 autodl服务器跑模型-幕布图片-597309-343711.jpg)
+    - 根据解压位置，选择根目录路径，使用cd进入想要的目录层
+        - cd autodl-tmp
+        - cd yolov5(文件名)
+    - 最后执行代码训练指令python train.py --data data/zhouzhou128.yaml --cfg models/yolov5s.yaml --weights weights/yolov5s.pt --batch-size 32 --epochs 100
+        - python train.py --data data/fish.yaml --cfg models/yolov5l-Cneb.yaml --weights weights/yolov5l.pt --batch-size 16 --epochs 150
+        - 注意这个命令是直接指定的参数，如果想用train里填好的参数，可以直接运行。输入：python train.py
+        - 此外，注意此命令的路径，如果本地当初各个文件不是放在models或weights等文件夹里的，要重新复制一个过去哦
+    - 补充
+        - 如果遇到/.../..../..../1.jpg类似错误（AssertionError: Image Not Found），删除数据集中labels目录下的cache文件
+        - 运行模型命令：python 文件名称
+        - 不能删除文件夹，但可以剪切到别的地方去
+        - 如果运行train.PY出现这种错误  说明镜像环境中的protobuf版本不对   可以输入指令 pip install protobuf==3.11.2 重新安装 即可（原先的protobuf 或者其他安装包的版本可以通过输入pip list来查看 ）  出现这个报错的时候系统环境中的protobuf版本为4.23.2 ![图片](./0 autodl服务器跑模型-幕布图片-144101-794714.jpg)
+- 2利用tensorboard看实时算法结果对比
+- > 前期需要先下载好tensorboard
+    - 先跑模型
+    - 另开一个终端
+    - cd到文件夹页面
+    - # 删除当前tensorboard进程
+        - ps -ef | grep tensorboard | awk '{print $2}' | xargs kill -9
+    - 然后输入调用tensorboard指令
+        - tensorboard --logdir=log --bind_all
+    - 再Ctrl+c
+    - 显示tensorboard进程
+        - tensorboard --port 6007 --logdir /root/autodl-tmp/yolov5-oculus/runs/train
+    - 回到aotopanel页面，在tensorboard处即可查看 ![图片](./0 autodl服务器跑模型-幕布图片-519752-166795.jpg)
+    - 本地调用tensorboard
+        - tensorboard --logdir yolov5-oculus-1\runs\train ![图片](./0 autodl服务器跑模型-幕布图片-32297-525801.jpg)
